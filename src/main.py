@@ -1,4 +1,5 @@
 import pygame
+import random
 
 # pygame setup
 pygame.init()
@@ -8,9 +9,10 @@ screen = pygame.display.set_mode(screen_dimensions)
 clock = pygame.time.Clock()
 running = True
 
-# Test Data
+# Environment Data
 board_size = 4
 board = [["S", "F", "F", "F"], ["F", "H", "F", "H"], ["F", "F", "F", "H"], ["H", "F", "F", "G"]]
+agent_location = [0, 0]
 
 while running:
     # poll for events
@@ -18,6 +20,14 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+
+    # Reinforcement Agent decision process
+    x = random.randint(0, 3)
+    y = random.randint(0, 3)
+
+    agent_location = [x, y]
+
+    print(agent_location)
 
     # fill the screen with a color to wipe away anything from last frame
     screen.fill("white")
@@ -52,10 +62,16 @@ while running:
         y = 48 + i * cell_size
         pygame.draw.line(screen, "black", (48, y), (48 + board_size * cell_size, y), border_width)
 
-
+    # Draw Decision-Making Agent
+    agent_x = 48 + agent_location[1] * cell_size + cell_size // 2
+    agent_y = 48 + agent_location[0] * cell_size + cell_size // 2
+    pygame.draw.circle(screen, "red", (agent_x, agent_y), cell_size // 3)
 
     # flip() the display to put your work on screen
     pygame.display.flip()
+
+    # Wait 1 second
+    pygame.time.wait(1000)
 
     clock.tick(60)  # limits FPS to 60
 
