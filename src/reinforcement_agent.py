@@ -30,14 +30,23 @@ class QLearningAgent:
     self.q_table[state][action] = q_curr + self.alpha * (target - q_curr)
 
 def step(pos, action, board):
+  slip = random.randint(1,5)
+  slip_cc = {0: 3, 1: 0, 2: 1, 3: 2}
+  slip_cw = {0: 1, 1: 2, 2: 3, 3: 0}
   row, col = pos
+
+  if slip == 1:
+    action = slip_cc[action]
+  elif slip == 2:
+    action = slip_cw[action]
+
   if action == 0:  # UP
     row = max(0, row - 1)
-  if action == 1:  # RIGHT
+  elif action == 1:  # RIGHT
     col = min(len(board[0]) - 1, col + 1)
-  if action == 2:  # DOWN
+  elif action == 2:  # DOWN
     row = min(len(board) - 1, row + 1)
-  if action == 3:  # LEFT
+  elif action == 3:  # LEFT
     col = max(0, col - 1)
 
   new_pos = [row, col]

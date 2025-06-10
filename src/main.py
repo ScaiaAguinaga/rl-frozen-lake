@@ -13,7 +13,7 @@ board_size = 4
 
 # Environment Data
 agent = QLearningAgent()
-num_episodes = 1000
+num_episodes = 10000
 board = [["S", "F", "F", "F"], ["F", "H", "F", "H"], ["F", "F", "F", "H"], ["H", "F", "F", "G"]]
 
 for episode in range(num_episodes):
@@ -88,7 +88,7 @@ while running and not done:
     pygame.display.flip()
 
     # Wait 1 second
-    pygame.time.wait(1000)
+    pygame.time.wait(100)
 
     clock.tick(60)  # limits FPS to 60
 
