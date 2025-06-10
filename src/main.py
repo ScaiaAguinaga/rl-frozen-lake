@@ -1,6 +1,6 @@
 import pygame
 import random
-import reinforcement_agent as reage
+from reinforcement_agent import QLearningAgent, step
 
 # pygame setup
 pygame.init()
@@ -9,26 +9,42 @@ screen_width, screen_height = screen_dimensions
 screen = pygame.display.set_mode(screen_dimensions)
 clock = pygame.time.Clock()
 running = True
+board_size = 4
 
 # Environment Data
-board_size = 4
+agent = QLearningAgent()
+num_episodes = 1000
 board = [["S", "F", "F", "F"], ["F", "H", "F", "H"], ["F", "F", "F", "H"], ["H", "F", "F", "G"]]
-agent_pos = [0, 0]
 
-while running:
-    # poll for events
+for episode in range(num_episodes):
+    agent_pos = [0, 0]
+    done = False
+
+    while not done:
+        state = agent.get_state(agent_pos)
+        action = agent.choose_action(state)
+        next_pos, reward, done = step(agent_pos, action, board)
+        next_state = agent.get_state(next_pos)
+        agent.update(state, action, reward, next_state, done)
+        agent_pos = next_pos
+
+print("Training complete!")
+print("Q-Table:", agent.q_table)
+
+agent.epsilon = 0  # Force to exploit data only
+agent_pos = [0, 0]
+done = False
+
+while running and not done:
     # pygame.QUIT event means the user clicked X to close your window
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
 
-    # action = random.randint(1, 4)
-
-    # print(action)
-
-    # new_pos, reward, end = reage.step(agent_pos, action, board)
-
-    # agent_pos = new_pos
+    state = agent.get_state(agent_pos)
+    action = agent.choose_action(state)
+    next_pos, reward, done = step(agent_pos, action, board)
+    agent_pos = next_pos
 
     # fill the screen with a color to wipe away anything from last frame
     screen.fill("white")
@@ -72,7 +88,7 @@ while running:
     pygame.display.flip()
 
     # Wait 1 second
-    pygame.time.wait(250)
+    pygame.time.wait(1000)
 
     clock.tick(60)  # limits FPS to 60
 
